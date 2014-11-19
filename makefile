@@ -8,13 +8,13 @@ CSDL = `sdl-config --libs --cflags`
 $(BIN): main.o moteur.o STJ_SDL.o
 	$(CC) $(IC2) main.o moteur.o STJ_SDL.o -o $(BIN) -lm $(CFLAGS)
 
-main.o: main.c $(INC)Head.h $(INC)STJ_SDL.h
+main.o: main.c $(INC)moteur.h $(INC)STJ_SDL.h
 	$(CC) $(IC2) -c main.c $(CSDL)
 	
-moteur.o: moteur.c $(INC)Head.h
+moteur.o: moteur.c $(INC)moteur.h
 	$(CC) $(IC2) -c moteur.c $(CSDL)
 	
-STJ_SDL.o: STJ_SDL.c $(INC)STJ_SDL.h $(INC)Head.h
+STJ_SDL.o: STJ_SDL.c $(INC)STJ_SDL.h $(INC)moteur.h
 	$(CC) $(IC2) -c STJ_SDL.c $(CSDL)
 
 clean:

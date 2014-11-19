@@ -17,7 +17,8 @@
 #include <SDL_image.h> //Pour imprimer des images
 #include <string.h> //Gestion des chaines
 
-#include "includes/Head.h"
+#include "includes/moteur.h"
+#include "includes/STJ_SDL.h"
 
 SDL_Surface *screen = NULL;
 
@@ -60,7 +61,7 @@ int main (int argc, char *argv[]) {
 	
 	int MenuChoix = 0;
 
-	SPI_SDL_Init_Video(800,600,"SPITaJoke SDL",1,1); //800x600 +tff_support +audio_support
+	SPI_SDL_Init_Video(1200,800,"CrossWords-SDL",1,1); //800x600 +tff_support +audio_support
 
 	//SDL_Splash("ressources/Splash0.png", 1500);
 	//SDL_Splash("ressources/Splash1.png", 1500);
