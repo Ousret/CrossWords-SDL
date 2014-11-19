@@ -85,6 +85,7 @@ int SDL_Create_Menu(TTF_Font *police, int nb_entre, char sommaire[N][M]) {
 	
 	int i = 0, action = 0;
 	int lastevent = -1;
+	int FirstInteration = 0;
 
 	sound = Mix_LoadWAV("ressources/snd/select.wav");
 	
@@ -130,7 +131,7 @@ int SDL_Create_Menu(TTF_Font *police, int nb_entre, char sommaire[N][M]) {
 					
 			}
 		}
-		
+		if (FirstInteration == 0) { FirstInteration = 1; }
 		SDL_Delay(20);
 		
 	}
@@ -215,18 +216,28 @@ int SDL_Souris_Survol(int hauteur, int largeur, int x, int y) {
 void SDL_Open_PopUp(int ligne, TTF_Font *police, char txt_ligne1[200], char txt_ligne2[200], char txt_ligne3[200]) {
 	
 	int action = 0;
+	int i = 0;
+	int lastevent = -1;
+	
+	sound = Mix_LoadWAV("ressources/snd/select.wav");
 	
 	while (1) {
 		
 		action = SDL_WaitEvent(&GlobalEvent); /* Récupération de l'événement dans event (non-blocant) */
 		
-		SDL_Print_bg("ressources/images/", 0, 0);
+		SDL_Print_bg("ressources/images/app_bg.png", 0, 0);
 		SDL_Print_popup();
 		
 		SDL_Write_popup(ligne, police, txt_ligne1, txt_ligne2, txt_ligne3);
 		SDL_Print_Btn(1, police, "OK", 270, 300);
 		
-		SDL_Flip (screen);
+		if (lastevent != sel_menu_m) {
+		
+			SDL_Flip (screen);
+			channel = Mix_PlayChannel(-1, sound, 0);
+			lastevent = sel_menu_m;
+		
+		}
 		
 		if (action) {
 			switch (GlobalEvent.type)
@@ -234,7 +245,13 @@ void SDL_Open_PopUp(int ligne, TTF_Font *police, char txt_ligne1[200], char txt_
 		        case SDL_MOUSEBUTTONDOWN: //Si on clique
 		        	
 					if (SDL_Souris_Survol(40, 140, 270, 300) == 1) {
+						
+						sound = Mix_LoadWAV("ressources/snd/enter.wav");
+						channel = Mix_PlayChannel(-1, sound, 0);
+						while(Mix_Playing(channel) != 0);
+						
 						return;
+						
 					}
 					break;
 					

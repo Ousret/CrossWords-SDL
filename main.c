@@ -85,6 +85,7 @@ int main (int argc, char *argv[]) {
 			
 			case 2:
 				//Statistiques joueur
+				SDL_Open_PopUp(3, police_std, "TAHRI Ahmed", "144 V / 44 D", "Niveau 44 - Intermediaire");
 				break;
 			
 			case 3:
