@@ -16,7 +16,8 @@
 #include <SDL_mixer.h>
 #include <SDL_ttf.h> //Pour imprimer du texte graphiquement
 #include <SDL_image.h> //Pour imprimer des images
-#include "includes/Head.h"
+
+#include "includes/moteur.h"
 
 /**
  * \fn void remplir_grille(void)

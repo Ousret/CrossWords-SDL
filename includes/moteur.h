@@ -9,9 +9,6 @@
 /* Pour la matrice du mot-meles */
 #define X_MAX 40
 #define Y_MAX 40
-/* Pour la matrice du sommaire */
-#define N 5
-#define M 50
 /* Pour la longueur maximale d'un mot */
 #define MAXLEN 30
 #define MAX_MOTS 25
