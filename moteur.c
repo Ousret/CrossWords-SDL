@@ -12,6 +12,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h> //Gestion des chaines
+#include <time.h>
 #include <SDL.h>
 #include <SDL_mixer.h>
 #include <SDL_ttf.h> //Pour imprimer du texte graphiquement
@@ -36,7 +37,7 @@ void remplir_grille(void) {
 			RandLetter = Random (97,122); //Lettre aléatoire
 			
 			if (GrilleMotMele[j][i] < 'a' || GrilleMotMele[j][i] > 'z') {
-
+				
 				GrilleMotMele[j][i] = RandLetter;
 				
 			}
@@ -59,15 +60,16 @@ void ecrire_grille(void) {
 	
 	int Direction = 0; //1 Droite; 2 Gauche; 3 Haut; 4 Bas; 5 DiagBas_0; 6 DiagHaut_0
 	
+	//fprintf(stdout, "NbMots: %i\n", NombreMot);
+	
 	for (i = 0; i < NombreMot; i ++) {
-		
-		srand (time (NULL)); 
 
 		RandX = Random (0, x_alloc); //Pos X aléatoire
 		RandY = Random (0, y_alloc); //Pos Y aléatoire
 		
 		// On décide de la direction à prendre
 		Direction = verifie_direction(RandX,RandY,strlen(Dic[i]));
+		//fprintf(stdout, "Mot: %s, X: %i et Y: %i ENJOY\n", Dic[i], RandX, RandY);
 		
 		switch (Direction) {
 			case 1:
@@ -78,6 +80,7 @@ void ecrire_grille(void) {
 
 				}
 				break;
+				
 			case 2:
 			
 				for (j = 0; j < strlen(Dic[i]); j++) {
@@ -193,8 +196,8 @@ int verifie_direction(int x, int y, long t) {
 	}
 	
 	//Test si possibilité de passer diagonale haut vers bas (1)
-	if ( (x-t < (x_alloc-1)) && (y-t > -1) ) {
-
+	//if ( (x-t < (x_alloc-1)) && (y-t > -1) && (x+t < (y_alloc-1)) && (y+t > -1) ) {
+	if ( (x+t < (x_alloc-1)) && (y+t < (y_alloc-1) )) {
 		x_test = x;
 		y_test = y;
 		
@@ -215,7 +218,8 @@ int verifie_direction(int x, int y, long t) {
 	}
 	
 	//Test si possibilité de passer diagonale bas vers haut (1)
-	if ( (x-t > -1) && (y-t < (y_alloc-1) )) {
+	//if ( (x-t > -1) && (y-t < (y_alloc-1) )) {
+	if( (x-t > -1) && (y-t > -1)){
 
 		x_test = x;
 		y_test = y;
@@ -240,7 +244,6 @@ int verifie_direction(int x, int y, long t) {
 	
 	while (Force < 10) {
 		
-		srand (time (NULL)); 
 		Direction = Random(1,6);
 	
 		switch (Direction) {
@@ -294,23 +297,26 @@ void lire_dic(void) {
    {
       	char line [ 128 ]; 
  		int NbMots = 0,CPURand=0,i = 0;
- 
+ 		
       	while ((fgets ( line, sizeof line, file ) != NULL) && ( NbMots < 10)) /* read a line */
       	{
-         	srand (time (NULL)); 
-         	CPURand = Random(0,2);
          	
-         	if (CPURand == 1) {
+         	CPURand = Random(0,10); //Random(0,2)
 
+         	if (CPURand == 5) {
+				
+				line[strlen(line)-2] = '\0'; //GG Jokoast
+				//fprintf(stdout, "line = %s Len = %i\n", line, strlen(line)); 
 				strcpy(Dic[NbMots], line);
-         		
          		NbMots++;
+         		
          	}
          	
          	memset(line, 0, sizeof(line)); //On formatte la chaine de lecture de ligne fichier
 			
       	}
       	
+      	NombreMot = NbMots;
 		fclose ( file );
    }
    else
@@ -323,6 +329,5 @@ void lire_dic(void) {
 
 int Random (int _iMin, int _iMax)
 {
-	//srand (time (NULL)); 
-	return (_iMin + (rand () % (_iMax-_iMin+1)));
+	return (rand() % (_iMax - _iMin) + _iMin);
 } 

@@ -11,6 +11,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 #include <SDL.h>
 #include <SDL_mixer.h>
 #include <SDL_ttf.h> //Pour imprimer du texte graphiquement
@@ -36,8 +37,8 @@ int NombreMot = 0;
 char GrilleMotMele[X_MAX][Y_MAX];
 char Dic[MAXLEN][MAX_MOTS];
 
-int x_alloc = 0;
-int y_alloc = 0;
+int x_alloc = 19;
+int y_alloc = 19;
 
 int size_x = 0, size_y = 0;
 
@@ -55,6 +56,7 @@ int sel_menu_m = 0;
 int main (int argc, char *argv[]) {
 
 	char sommaire[N][M] = { "Partie locale", "Partie internet", "Statistiques", "Quitter" };
+	char game[N][M] = { "Abandon", "Quitter jeux"};
 
 	TTF_Font *police_menu = NULL; //Police d'Ècriture pour le menu 
 	TTF_Font *police_std = NULL; //Police pour tout le reste sauf menu
@@ -69,6 +71,8 @@ int main (int argc, char *argv[]) {
 	police_menu = TTF_OpenFont("ressources/ttf/global.ttf", 30);
 	police_std = TTF_OpenFont("ressources/ttf/global.ttf", 20);
 
+	srand (time (NULL)); 
+
 	while (1) {
 		
 		MenuChoix = SDL_Create_Menu(police_menu, 4, sommaire); //On affiche un menu de cinq entrÈe
@@ -77,6 +81,11 @@ int main (int argc, char *argv[]) {
 			
 			case 0: 
 				//Contre CPU ou SOLO
+				lire_dic(); //On prend des mots
+				ecrire_grille(); //On les places
+				//remplir_grille();
+				
+				SDL_Create_Local(police_std, 2, game);
 				break;
 				
 			case 1:

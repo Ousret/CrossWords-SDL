@@ -17,7 +17,9 @@
 #include <SDL_image.h> //Pour imprimer des images
 #include <string.h> //Gestion des chaines
 
+#include "includes/moteur.h"
 #include "includes/STJ_SDL.h"
+
 
 void SPI_SDL_Init_Video(int x, int y, char titre[100], int ttf_support, int audio_support) {
 	
@@ -216,7 +218,6 @@ int SDL_Souris_Survol(int hauteur, int largeur, int x, int y) {
 void SDL_Open_PopUp(int ligne, TTF_Font *police, char txt_ligne1[200], char txt_ligne2[200], char txt_ligne3[200]) {
 	
 	int action = 0;
-	int i = 0;
 	int lastevent = -1;
 	
 	sound = Mix_LoadWAV("ressources/snd/select.wav");
@@ -396,6 +397,122 @@ void SDL_Print_Form(int id, TTF_Font *police, char titre[30], int etat, char des
 	
 	SDL_FreeSurface(imageDeFond);
 	SDL_FreeSurface(titre_ttf);
+	
+}
+
+void SDL_Matrice_print(TTF_Font *police, int x, int y) {
+
+	SDL_Surface *saisie_ttf = NULL; //La saisie TTF (Pour la matrice de lettres)
+	SDL_Rect positionLigne;
+	int i = 0, j = 0, x_tmp = 0, y_tmp = 0;
+	char tmp[5];
+	tmp[1] = '\0';
+	
+	x_tmp = x;
+	y_tmp = y;
+	
+	for (i = 0; i <= 19; i++) {
+		
+		for (j = 0; j <= 19; j++) {
+			
+			tmp[0] = GrilleMotMele[i][j];
+			
+			saisie_ttf = TTF_RenderText_Blended(police, tmp, couleurNoire);
+			positionLigne.x = x_tmp;
+			positionLigne.y = y_tmp;
+			
+			SDL_BlitSurface(saisie_ttf, NULL, screen, &positionLigne);
+			
+			x_tmp+=20;
+			
+		}
+		
+		y_tmp+=20;
+		x_tmp=x;
+		
+	}
+
+}
+
+void SDL_List_Print(TTF_Font *police, int x, int y) {
+
+	SDL_Surface *saisie_ttf = NULL; //La saisie TTF (Pour la matrice de lettres)
+	SDL_Rect positionLigne;
+	int i = 0, x_tmp = 0, y_tmp = 0;
+	
+	x_tmp = x;
+	y_tmp = y;
+	
+	for (i = 0; i <= NombreMot; i++) {
+		
+		saisie_ttf = TTF_RenderText_Blended(police, Dic[i], couleurNoire);
+		positionLigne.x = x_tmp;
+		positionLigne.y = y_tmp;
+		
+		SDL_BlitSurface(saisie_ttf, NULL, screen, &positionLigne);
+		
+		y_tmp+=20;
+		
+	}
+
+}
+
+int SDL_Create_Local(TTF_Font *police, int nb_entre, char sommaire[N][M]) {
+	
+	int i = 0, action = 0;
+	int lastevent = -1;
+	int FirstInteration = 0;
+	
+	sound = Mix_LoadWAV("ressources/snd/select.wav");
+	
+	//On ne quitte pas la boucle tant qu'aucune selection n'a été faite
+	while (1) {
+		
+		action = SDL_WaitEvent(&GlobalEvent); /* Récupération de l'événement dans event (non-blocant) */
+		
+		SDL_Print_bg("ressources/images/app_bg_game.png", 0, 0); //Fond d'écran
+		
+		for (i = 0; i < nb_entre; i++) {
+			SDL_Create_Menu_Ch(police, i, sommaire[i], 200+(i*230), 500); //Menu horizontal
+		}
+		
+		SDL_Matrice_print(police, 85, 39);
+		SDL_List_Print(police, 530, 39);
+		
+		if (lastevent != sel_menu_m) {
+		
+			SDL_Flip (screen);
+			channel = Mix_PlayChannel(-1, sound, 0);
+			lastevent = sel_menu_m;
+		
+		}
+		
+		if (action) {
+				
+			switch (GlobalEvent.type)
+        	{
+		        case SDL_MOUSEBUTTONDOWN: //Si on clique
+		        	
+					if (SDL_Souris_Survol(40, 230, 200+(sel_menu_m*230), 500) == 1) {
+						sound = Mix_LoadWAV("ressources/snd/enter.wav");
+						channel = Mix_PlayChannel(-1, sound, 0);
+						while(Mix_Playing(channel) != 0);
+						return sel_menu_m;
+					}
+					
+					break;
+					
+		        case SDL_QUIT:
+		        
+		        	exit (0);
+					break;
+					
+			}
+		}
+		if (FirstInteration == 0) { FirstInteration = 1; }
+		SDL_Delay(20);
+		
+	}
 	
 }
 
