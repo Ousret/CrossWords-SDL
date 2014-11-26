@@ -68,7 +68,7 @@ void ecrire_grille(void) {
 		RandY = Random (0, y_alloc); //Pos Y aléatoire
 		
 		// On décide de la direction à prendre
-		Direction = verifie_direction(RandX,RandY,strlen(Dic[i]));
+		Direction = verifie_direction(RandX,RandY,strlen(Dic[i]),i);
 		//fprintf(stdout, "Mot: %s, X: %i et Y: %i ENJOY\n", Dic[i], RandX, RandY);
 		
 		switch (Direction) {
@@ -134,7 +134,7 @@ void ecrire_grille(void) {
 	}
 }
 
-int verifie_direction(int x, int y, long t) {
+int verifie_direction(int x, int y, long t, int idmot) {
 	
 	int i = 0, Direction = -1;
 	int Droite = 0, Gauche = 0, Haut = 0, Bas = 0, DiagBas_0 = 0, DiagHaut_0 = 0, DiagBas_1 = 0, DiagHaut_1 = 0;
@@ -143,11 +143,11 @@ int verifie_direction(int x, int y, long t) {
 	int x_test = 0, y_test = 0;
 	
 	//Test si possibilité de passer à droite
-	if (x+t < (x_alloc-1)) {
+	if (x+t < (x_alloc)) {
 		
 		for (i = 0; i < t; i++) {
 		
-			if (GrilleMotMele[x+i][y] != 0) {
+			if ((GrilleMotMele[x+i][y] != 0)&&(GrilleMotMele[x+i][y]!=Dic[idmot][i])) {
 				Droite = 0;
 				break;
 			}
@@ -160,9 +160,9 @@ int verifie_direction(int x, int y, long t) {
 
 	
 	//Test si possibilité de passer à gauche
-	if (x-t > -1) {
+	if (x-t >= 0) {
 		for (i = 0; i < t; i++) {
-			if (GrilleMotMele[x-i][y] != 0) {
+			if ((GrilleMotMele[x-i][y] != 0)&&(GrilleMotMele[x-i][y]!=Dic[idmot][i])) {
 				Gauche = 0;
 				break;
 			}
@@ -172,9 +172,9 @@ int verifie_direction(int x, int y, long t) {
 	
 
 	//Test si possibilité de passer en haut
-	if (y+t < (y_alloc-1)) {
+	if (y-t >= 0) {
 		for (i = 0; i < t; i++) {
-			if (GrilleMotMele[x][y+i] != 0) {
+			if ((GrilleMotMele[x][y+i] != 0)&&(GrilleMotMele[x][y+i] != Dic[idmot][i])) {
 				Haut = 0;
 				break;
 			}
@@ -183,10 +183,10 @@ int verifie_direction(int x, int y, long t) {
 	}
 	
 	//Test si possibilité de passer en bas
-	if (y-t > -1) {
+	if (y+t < (y_alloc)) {
 		for (i = 0; i < t; i++) {
-			
-			if (GrilleMotMele[x][y-i] != 0) {
+		
+			if ((GrilleMotMele[x][y-i] != 0)&&(GrilleMotMele[x][y-i] != Dic[idmot][i])) {
 				Bas = 0;
 				break;
 			}
@@ -197,13 +197,14 @@ int verifie_direction(int x, int y, long t) {
 	
 	//Test si possibilité de passer diagonale haut vers bas (1)
 	//if ( (x-t < (x_alloc-1)) && (y-t > -1) && (x+t < (y_alloc-1)) && (y+t > -1) ) {
-	if ( (x+t < (x_alloc-1)) && (y+t < (y_alloc-1) )) {
+	// x_alloc et y_alloc étant la taille en x et y max de la matrice
+	if ( (x+t < (x_alloc)) && (y+t < (y_alloc) )) {
 		x_test = x;
 		y_test = y;
 		
-		for (i = 0; i < t; i++) {
+		for (i = 0; i <= t; i++) {
 			
-			if (GrilleMotMele[x_test][y_test] != 0) {
+			if ((GrilleMotMele[x_test][y_test] != 0)&&(GrilleMotMele[x_test][y_test] != Dic[idmot][i])) {
 				DiagBas_0 = 0;
 				break;
 			}
@@ -224,9 +225,9 @@ int verifie_direction(int x, int y, long t) {
 		x_test = x;
 		y_test = y;
 		
-		for (i = 0; i < t; i++) {
+		for (i = 0; i <= t; i++) {
 			
-			if (GrilleMotMele[x_test][y_test] != 0) {
+			if ((GrilleMotMele[x_test][y_test] != 0)&&(GrilleMotMele[x_test][y_test] != Dic[idmot][i])) {
 				DiagHaut_0 = 0;
 				break;
 			}
@@ -330,4 +331,9 @@ void lire_dic(void) {
 int Random (int _iMin, int _iMax)
 {
 	return (rand() % (_iMax - _iMin) + _iMin);
-} 
+}
+
+void init_mat (){
+	memset(GrilleMotMele,0,sizeof(GrilleMotMele));
+	memset(Dic,0,sizeof(Dic));
+}

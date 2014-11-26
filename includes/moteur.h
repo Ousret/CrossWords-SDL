@@ -16,10 +16,11 @@
 /* Prototype du moteur du jeu */
 void lire_dic(void);
 void ecrire_grille(void);
-int verifie_direction(int x, int y, long t);
+int verifie_direction(int x, int y, long t, int idmot);
 void remplir_grille(void);
 void imprime_grille(void);
 int Random (int _iMin, int _iMax);
+void init_mat ();
 
 extern int NombreMot;
 
