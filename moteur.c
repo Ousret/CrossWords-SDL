@@ -151,8 +151,7 @@ int verifie_direction(int x, int y, long t, int idmot) {
 				Droite = 0;
 				break;
 			}
-			
-		Droite = 1;
+			Droite = 1;
 		}
 		
 		
@@ -291,7 +290,7 @@ int verifie_direction(int x, int y, long t, int idmot) {
 
 void lire_dic(void) {
    
-   static const char filename[] = "fr.dic";
+   static const char filename[] = "ressources/dics/fr.dic";
    FILE *file = fopen ( filename, "r" );
    
    if ( file != NULL )
@@ -302,8 +301,8 @@ void lire_dic(void) {
       	while ((fgets ( line, sizeof line, file ) != NULL) && ( NbMots < 10)) /* read a line */
       	{
          	
-         	CPURand = Random(0,10); //Random(0,2)
-
+         	CPURand = Random(0,26000); //Random(0,2)
+			
          	if (CPURand == 5) {
 				
 				line[strlen(line)-2] = '\0'; //GG Jokoast
@@ -314,7 +313,10 @@ void lire_dic(void) {
          	}
          	
          	memset(line, 0, sizeof(line)); //On formatte la chaine de lecture de ligne fichier
-			
+			if (feof(file)){
+				fclose(file);
+				file = fopen( filename, "r" );
+			}
       	}
       	
       	NombreMot = NbMots;
