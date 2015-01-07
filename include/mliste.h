@@ -1,6 +1,13 @@
-/*
-	En-tête de mliste.c
-*/
+/**
+ * \file mliste.h
+ * \brief Gestion de l'indexation
+ * \author TAHRI Ahmed, SIMON Jérémy
+ * \version 0.2.2
+ * \date 03/01/2015
+ *
+ * Ne concerne que l'indexation
+ *
+ */
 
 #define ERREUR -1
 #define MAX_TAMPON 100000
