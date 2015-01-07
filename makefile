@@ -7,7 +7,7 @@ CSDL = `sdl-config --cflags`
 $(BIN): main.o engine.o mliste.o
 	$(CC) main.o engine.o mliste.o -o $(BIN) -lm $(CFLAGS)
 
-main.o: main.c $(INC)engine.h $(INC)ESDL.h
+main.o: main.c $(INC)engine.h
 	$(CC) -c main.c $(CSDL)
 
 engine.o: engine.c $(INC)engine.h
