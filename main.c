@@ -54,6 +54,7 @@ void generateGrille() {
 	nb_empty_cell = M*M;
 	MAX_WORDS=0;
 	memset(words, 0, sizeof(words));
+	memset(id_matched, 0, sizeof(id_matched));
 	// Matrice
 	sprintf(msg, "Preparation de la table de mot-meles..");
 	SDL_modText(loading, 0, msg, colorBlack, 50, 550);
@@ -181,9 +182,16 @@ void ingame() {
 				
 				id_match = isAllreadyIn(select);
 				
-				if (id_match >= 0) {
+				for (i = 0; i < MAX_WORDS-nb_word_remain; i++) {
+						if (id_matched[i] == id_match) break;
+				}
+				
+				if ((id_match >= 0) && (id_match != id_matched[i])) {
+					
 					SDL_modText(ingame, 400+id_match, words[id_match], colorRed, -1, -1);
 					SDL_playwav("xpup.wav", 0, NULL);
+					id_matched[MAX_WORDS-nb_word_remain] = id_match;
+					
 					nb_word_remain--;
 					EXP_J1+=3;
 					sprintf(XP_HUD, "%i d'XP", EXP_J1);

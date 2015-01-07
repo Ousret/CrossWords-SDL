@@ -10,6 +10,7 @@
 // VARIABLES GLOBALES
 char matrice[M][M];
 char words[100][20];
+int id_matched[40] = {0};
 int MAX_WORDS=0;
 t_dic * allData = NULL;
 long nb_words = 0;

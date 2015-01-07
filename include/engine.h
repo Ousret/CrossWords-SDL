@@ -16,6 +16,7 @@
 
 extern char matrice[M][M];
 extern char words[100][20];
+extern int id_matched[40];
 extern int MAX_WORDS;
 extern int nb_empty_cell;
 extern int limite_mots;
