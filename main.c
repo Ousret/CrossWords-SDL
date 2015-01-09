@@ -179,7 +179,7 @@ void ingame() {
 				SDL_modText(ingame, HUD, "SPACE RELEASED !", colorWhite, -1, -1);
 				fprintf(stderr, "%s\n", select);
 				select_mode = 0;
-				
+				update = 1;
 				id_match = isAllreadyIn(select);
 				
 				for (i = 0; i < MAX_WORDS-nb_word_remain; i++) {
