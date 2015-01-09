@@ -329,7 +329,7 @@ int main(int argc, char * argv[]) {
 				popup = SDL_newWindow("Mon compte", 200, 200, 500, 250);
 				memset(nb_mots_txt,0,sizeof(nb_mots_txt));
 				SDL_newTexture(popup, NULL, "popup.png", 0, 0, 500, 250);
-				SDL_newText(popup, NULL, "Preciser le nombre de mots (de 10 à 40)", colorWhite, 10, 40);
+				SDL_newText(popup, NULL, "Preciser le nombre de mots (de 10 a 40)", colorWhite, 10, 40);
 				SDL_newObj(popup, NULL, 1, "Mots", nb_mots_txt, NUMERIC, 70, 70, 40, 400);
 				
 				SDL_newObj(popup, NULL, 0, "Generer", NULL , ALL, 150, 200, 40, 230);
