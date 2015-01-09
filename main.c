@@ -126,7 +126,7 @@ void ingame() {
 	
 	SDL_newTexture(ingame, NULL, "APP_INGAME.png", 0, 0, 800, 600);
 	SDL_newSprite(ingame, "panda_sp.png", colorGreenLight, 145, 144, 36, 33, posX, posY, DIR_DOWN, 1, 0);
-	SDL_preloadwav("xpup.wav");
+	//SDL_preloadwav("xpup.wav");
 	
 	//510x 40y
 	for (i = 0; i < M; i++) {
@@ -189,7 +189,7 @@ void ingame() {
 				if ((id_match >= 0) && (id_match != id_matched[i])) {
 					
 					SDL_modText(ingame, 400+id_match, words[id_match], colorRed, -1, -1);
-					SDL_playwav("xpup.wav", 0, NULL);
+					//SDL_playwav("xpup.wav", 0, NULL);
 					id_matched[MAX_WORDS-nb_word_remain] = id_match;
 					
 					nb_word_remain--;
@@ -297,7 +297,7 @@ int main(int argc, char * argv[]) {
 	memset(pseudo, 0, sizeof(pseudo));
 	strcpy(pseudo, "NoName");
 	
-	// Aléatoirité
+	// AlÃ©atoiritÃ©
 	if(DEBUG)fprintf(stderr,"\nRandom initializing");
 	srand(time(NULL));
 	if(DEBUG)fprintf(stderr,"\nRandom initialized\n");
@@ -329,7 +329,7 @@ int main(int argc, char * argv[]) {
 				popup = SDL_newWindow("Mon compte", 200, 200, 500, 250);
 				memset(nb_mots_txt,0,sizeof(nb_mots_txt));
 				SDL_newTexture(popup, NULL, "popup.png", 0, 0, 500, 250);
-				SDL_newText(popup, NULL, "Preciser le nombre de mots (de 10 à 40)", colorWhite, 10, 40);
+				SDL_newText(popup, NULL, "Preciser le nombre de mots (de 10 Ã  40)", colorWhite, 10, 40);
 				SDL_newObj(popup, NULL, 1, "Mots", nb_mots_txt, NUMERIC, 70, 70, 40, 400);
 				
 				SDL_newObj(popup, NULL, 0, "Generer", NULL , ALL, 150, 200, 40, 230);
