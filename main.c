@@ -2,8 +2,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <pthread.h>
-#include <ESDL.h>
 
+#include <ESDL.h>
 #include "include/engine.h"
 
 #define DIR_UP 4
@@ -321,7 +321,7 @@ int main(int argc, char * argv[]) {
 	memset(pseudo, 0, sizeof(pseudo));
 	strcpy(pseudo, "NoName");
 	
-	// Aléatoirité
+	// Alï¿½atoiritï¿½
 	if(DEBUG)fprintf(stderr,"\nRandom initializing");
 	srand(time(NULL));
 	if(DEBUG)fprintf(stderr,"\nRandom initialized\n");
