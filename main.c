@@ -12,6 +12,7 @@
 #define DIR_RIGHT 3
 
 int EXP_J1 = 0, LVL_J1 = 1;
+FILE *debugp = NULL;
 
 void generateIndex() {
 	
@@ -27,7 +28,7 @@ void generateIndex() {
 	//if(DEBUG)fprintf(stderr,"\nIndex initializing");
 	
 	if (!fic) return;
-	
+	fprintf(debugp, "generateIndex BEGIN\n");
 	sprintf(msg,"Lecture du dictionnaire..");
 	SDL_modText(loading, 0, msg, colorBlack, 50, 550);
 	SDL_generate(loading);
@@ -39,6 +40,7 @@ void generateIndex() {
 	SDL_generate(loading);
 	
 	fclose(fic);
+	fprintf(debugp, "End read fic\n");
 	SDL_freeWindow(loading);
 	
 }
@@ -318,27 +320,30 @@ int main(int argc, char * argv[]) {
 	int choix = 0;
 	t_window *menu = NULL, *popup = NULL;
 	
+	debugp = fopen("debug.txt","w");
+	
 	memset(pseudo, 0, sizeof(pseudo));
 	strcpy(pseudo, "NoName");
 	
-	// Alï¿½atoiritï¿½
+	// Aléatoirité
 	if(DEBUG)fprintf(stderr,"\nRandom initializing");
 	srand(time(NULL));
 	if(DEBUG)fprintf(stderr,"\nRandom initialized\n");
 	
 	SDL_init(800, 600, 0, "CrossWords ESDL", NULL, 1, "global.ttf", 20, 1); //800x600 +tff_support +audio_support
+	fprintf(debugp, "generateIndex START\n");
 	generateIndex();
-	
+	fprintf(debugp, "Menu START\n");
 	menu = SDL_newWindow("CrossWords SDL", 0, 0, 800, 600);
 	SDL_newTexture(menu, NULL, "APP_BG_SAMPLE.png", 0, 0, 800, 600);
-	
+	fprintf(debugp, "Texture LOAD\n");
 	SDL_newObj(menu, NULL, 0, "Nouvelle partie", NULL, ALL, 50, 550, 40, 230);
 	SDL_newObj(menu, NULL, 0, "Options", NULL, ALL, 280, 550, 40, 230);
 	SDL_newObj(menu, NULL, 0, "Quitter", NULL, ALL, 510, 550, 40, 230);
 	SDL_newText(menu, NULL, pseudo, colorBlack, 550, 40);
 	sprintf(ratio, "Score : %i d'XP", EXP_J1);
 	SDL_newText(menu, NULL, ratio, colorRed, 550, 60);
-	
+	fprintf(debugp, "While ENTER\n");
 	while (1) {
 		
 		sprintf(ratio, "Score : %i d'XP", EXP_J1);
