@@ -11,7 +11,7 @@
 char matrice[M][M];
 char words[100][20];
 int id_matched[40] = {0};
-int MAX_WORDS=0;
+int MAX_WORDS = 0;
 t_dic * allData = NULL;
 long nb_words = 0;
 int nb_empty_cell = M*M;
@@ -81,7 +81,7 @@ void displayMatrice(void){
 // Remplis la matrice avec des mots choisis aléatoirement
 // correspondant à un patron rédigé à partir d'une position
 // et direction aléatoires puis remplis la matrice
-void fillMatrice(void){
+void *fillMatrice(void *arg){
 	int direction=-1, x, y, i=0;
 	char patrontest[20];
 	char * wordPTR = NULL;
@@ -104,6 +104,9 @@ void fillMatrice(void){
 		}
 		if(DEBUG)fprintf(stderr,"\n-------------");
 	}while ((nb_empty_cell > NB_EMPTY_CELL_MIN) && MAX_WORDS < limite_mots);
+	
+	pthread_exit(NULL);
+	
 }
 
 // Remplis les espaces vides de la matrice par des lettres aléatoires

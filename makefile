@@ -1,7 +1,7 @@
-CC  = gcc -Wall -Wextra -g
+CC  = gcc -Wall -Wextra
 BIN = CrossWords
 INC = include/
-CFLAGS =`sdl-config --libs --cflags` -lSDL_image -lSDL_ttf -lSDL_mixer -lESDL #-lGL -lGLU -lGLEW -lSDL2_gpu 
+CFLAGS =`sdl-config --libs --cflags` -lSDL_image -lSDL_ttf -lESDL -lpthread -lfmodex #-lGL -lGLU -lGLEW -lSDL2_gpu 
 CSDL = `sdl-config --cflags`
 
 $(BIN): main.o engine.o mliste.o

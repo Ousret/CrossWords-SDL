@@ -8,7 +8,6 @@
  * Génération de la grille; Indexation des mots
  *
  */
-// Mettre DEBUG Ã  1 pour activer les messages d'erreur en console
 #define DEBUG 0
 #define M 20
 #define MAX_LEN 128
@@ -21,7 +20,6 @@ extern int MAX_WORDS;
 extern int nb_empty_cell;
 extern int limite_mots;
 
-// DECLARATIONS FONCTIONS
 /**
  * \fn void initMatrice(void)
  * \brief Initialise la matrice manuellement
@@ -37,12 +35,12 @@ void initMatrice(void);
  */
 void displayMatrice(void);
 /**
- * \fn void fillMatrice(void)
- * \brief Rempli la matrice avec des mots par deux méthodes
+ * \fn void *fillMatrice(void *arg)
+ * \brief Rempli la matrice avec des mots par deux méthodes (pthread)
  *
  * \return AUCUNE
  */
-void fillMatrice(void);
+void *fillMatrice(void *arg);
 /**
  * \fn void makePattern(char * pattern, int * x, int * y, int * direction)
  * \brief Génére un patron pour une situation donnée
@@ -61,6 +59,7 @@ void makePattern(char * pattern, int * x, int * y, int * direction);
  * \return AUCUNE
  */
 void initialiseFrom(FILE * fic);
+
 void writeWord(char * mot, int direction, int x, int y);
 /**
  * \fn void randomFilling(void)

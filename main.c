@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <pthread.h>
 #include <ESDL.h>
 
 #include "include/engine.h"
@@ -10,9 +11,10 @@
 #define DIR_LEFT 2
 #define DIR_RIGHT 3
 
-int EXP_J1 = 0;
+int EXP_J1 = 0, LVL_J1 = 1;
 
 void generateIndex() {
+	
 	char msg[200];
 	memset(msg, 0, sizeof(msg));
 	t_window * loading = SDL_newWindow("CrossWords SDL", 0, 0, 800, 600);
@@ -23,6 +25,8 @@ void generateIndex() {
 	FILE * fic = NULL;
 	fic=fopen("fr.dic","r");
 	//if(DEBUG)fprintf(stderr,"\nIndex initializing");
+	
+	if (!fic) return;
 	
 	sprintf(msg,"Lecture du dictionnaire..");
 	SDL_modText(loading, 0, msg, colorBlack, 50, 550);
@@ -36,11 +40,14 @@ void generateIndex() {
 	
 	fclose(fic);
 	SDL_freeWindow(loading);
+	
 }
 
 void generateGrille() {
 	
 	char msg[200];
+	pthread_t thread_fillMatrice;
+	
 	memset(msg, 0, sizeof(msg));
 	t_window * loading = SDL_newWindow("CrossWords SDL", 0, 0, 800, 600);
 	SDL_newTexture(loading, NULL, "APP_BG_LOAD.png", 0, 0, 800, 600);
@@ -67,11 +74,25 @@ void generateGrille() {
 	SDL_generate(loading);
 	
 	// Moteur
-	sprintf(msg, "Generation d'une nouvelle grille..");
+	sprintf(msg, "Generation d'une nouvelle grille, %i mot(s) sur %i places..", MAX_WORDS, limite_mots);
 	SDL_modText(loading, 0, msg, colorBlack, 50, 550);
 	SDL_generate(loading);
 	
-	fillMatrice();
+	if (pthread_create(&thread_fillMatrice, NULL, fillMatrice, NULL)) {
+		perror("pthread_create");
+		return;
+    }
+		
+	while (MAX_WORDS < limite_mots) {
+		
+		sprintf(msg, "Generation d'une nouvelle grille, %i mot(s) sur %i places..", MAX_WORDS, limite_mots);
+		SDL_modText(loading, 0, msg, colorBlack, 50, 550);
+		SDL_generate(loading);
+		
+		SDL_Delay(100);
+		
+	}
+	
 	randomFilling();
 	
 	sprintf(msg, "Chargement..");
@@ -93,13 +114,13 @@ void generateGrille() {
 int pause() {
 	int choix = 0;
 	t_window * popup = SDL_newWindow("Mon compte", 200, 200, 500, 250);
-				
+			
 	SDL_newTexture(popup, NULL, "popup.png", 0, 0, 500, 250);
 	SDL_newText(popup, NULL, "PAUSE", colorWhite, 100, 100);
 	
 	SDL_newObj(popup, NULL, 0, "Continuer", NULL, ALL, 10, 200, 40, 230);
 	SDL_newObj(popup, NULL, 0, "Menu", NULL , ALL, 250, 200, 40, 230);
-				
+			
 	choix = SDL_generate(popup);
 	SDL_freeWindow(popup);	
 	
@@ -126,7 +147,7 @@ void ingame() {
 	
 	SDL_newTexture(ingame, NULL, "APP_INGAME.png", 0, 0, 800, 600);
 	SDL_newSprite(ingame, "panda_sp.png", colorGreenLight, 145, 144, 36, 33, posX, posY, DIR_DOWN, 1, 0);
-	SDL_preloadwav("xpup.wav");
+	SDL_loadSound("xpup.wav");
 	
 	//510x 40y
 	for (i = 0; i < M; i++) {
@@ -172,12 +193,13 @@ void ingame() {
 			
 			select_mode = 1;
 			SDL_modText(ingame, HUD, "SPACE PRESSED !", colorRed, -1, -1);
+			update = 1;
 			
 		}else{
+			
 			if (select_mode == 1) {
 			
 				SDL_modText(ingame, HUD, "SPACE RELEASED !", colorWhite, -1, -1);
-				fprintf(stderr, "%s\n", select);
 				select_mode = 0;
 				
 				id_match = isAllreadyIn(select);
@@ -189,7 +211,7 @@ void ingame() {
 				if ((id_match >= 0) && (id_match != id_matched[i])) {
 					
 					SDL_modText(ingame, 400+id_match, words[id_match], colorRed, -1, -1);
-					SDL_playwav("xpup.wav", 0, NULL);
+					SDL_playSound("xpup.wav", 0);
 					id_matched[MAX_WORDS-nb_word_remain] = id_match;
 					
 					nb_word_remain--;
@@ -202,6 +224,8 @@ void ingame() {
 					}else{
 						update = 1;
 					} 
+				}else{
+					update = 1;
 				}
 				
 				for (i = 0; i < M; i++) {
@@ -329,7 +353,7 @@ int main(int argc, char * argv[]) {
 				popup = SDL_newWindow("Mon compte", 200, 200, 500, 250);
 				memset(nb_mots_txt,0,sizeof(nb_mots_txt));
 				SDL_newTexture(popup, NULL, "popup.png", 0, 0, 500, 250);
-				SDL_newText(popup, NULL, "Preciser le nombre de mots (de 10 à 40)", colorWhite, 10, 40);
+				SDL_newText(popup, NULL, "Preciser le nombre de mots (de 10 a 40)", colorWhite, 10, 40);
 				SDL_newObj(popup, NULL, 1, "Mots", nb_mots_txt, NUMERIC, 70, 70, 40, 400);
 				
 				SDL_newObj(popup, NULL, 0, "Generer", NULL , ALL, 150, 200, 40, 230);

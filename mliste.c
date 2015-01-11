@@ -1,11 +1,11 @@
 /*
-	http://sdz.tdct.org/sdz/les-listes-chainees-2.html
-	R√©utilis√© par SIMON J√©r√©my, TAHRI Ahmed
-	Dans le cadre de l'indexation dynamique de mots
+	mliste.c 
+	TAHRI Ahmed, SIMON Jérémy
 */
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+
 #include "include/mliste.h"
 
 t_alphabet * dataAlphabet = NULL;
