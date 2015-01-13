@@ -128,7 +128,7 @@ int rowCreate(char letter) {
 }
 
 int ischarMatch(char * word, char lettre, int indice) {
-	if (strlen(word) <= indice) return 0;
+	if ((int)strlen(word) <= indice) return 0;
 	if (word[indice] == lettre) return 1;
 	return 0; 
 }
@@ -148,7 +148,7 @@ char * rechercherElement(char * pattern, int indice)
     if (nbLettertomatch == 0) {
     	
     	for (i = 0; i < nb_words; i++) {
-    		if (strlen(allData[i].word) == len) {
+    		if ((int)strlen(allData[i].word) == len) {
     			
     			if (indice_round == indice) {
     				return allData[i].word;	
@@ -173,7 +173,7 @@ char * rechercherElement(char * pattern, int indice)
 
 			for (j = 0; j < dataAlphabet[rowId_tmp].indexSize; j++) {
 
-    			if (strlen(allData[dataAlphabet[rowId_tmp].index[j].wordid].word) == len) {
+    			if ((int)strlen(allData[dataAlphabet[rowId_tmp].index[j].wordid].word) == len) {
     				
     				for (k = 0; k < dataAlphabet[rowId_tmp].index[j].nb_occ; k++) {
     					
@@ -182,7 +182,7 @@ char * rechercherElement(char * pattern, int indice)
     						
 							if (indice_round == indice) {
     							//On test le reste des lettres pour le même mot
-    							for (p = 0; p < strlen(pattern); p++) {
+    							for (p = 0; p < (int)strlen(pattern); p++) {
     								if (pattern[p] != '*') {
     									if (ischarMatch(allData[dataAlphabet[rowId_tmp].index[j].wordid].word, pattern[p], p) == 1) {
     										nbLetterRemain--;
