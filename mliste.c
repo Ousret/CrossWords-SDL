@@ -27,13 +27,13 @@ int ajouterEnFin(int wordid, char letter, int pos, int * indexId)
 		
 	}
 		
-	if(dataAlphabet[row].index == NULL) {
+	if(!(dataAlphabet[row].index)) {
 		
 		dataAlphabet[row].index = malloc(sizeof(t_index));
 		
 	}else {
 		
-		dataAlphabet[row].index = realloc(dataAlphabet[row].index, sizeof(t_index)*((dataAlphabet[row].indexSize)+1));
+		dataAlphabet[row].index = realloc(dataAlphabet[row].index, sizeof(t_index)*((dataAlphabet[row].indexSize)+2));
 		
 	}
 	
@@ -41,10 +41,10 @@ int ajouterEnFin(int wordid, char letter, int pos, int * indexId)
 		
 		if (dataAlphabet[row].index[dataAlphabet[row].indexSize].wordid == wordid) {
 			
-			dataAlphabet[row].index[dataAlphabet[row].indexSize].pos = realloc(dataAlphabet[row].index[dataAlphabet[row].indexSize].pos, sizeof(int)*((dataAlphabet[row].index[dataAlphabet[row].indexSize].nb_occ)+1));
-			dataAlphabet[row].index[dataAlphabet[row].indexSize].pos[dataAlphabet[row].index[dataAlphabet[row].indexSize].nb_occ] = pos;
-			dataAlphabet[row].index[dataAlphabet[row].indexSize].nb_occ = (dataAlphabet[row].index[dataAlphabet[row].indexSize].nb_occ) + 1;
-		
+			//dataAlphabet[row].index[dataAlphabet[row].indexSize].pos = realloc(dataAlphabet[row].index[dataAlphabet[row].indexSize].pos, sizeof(int)*((dataAlphabet[row].index[dataAlphabet[row].indexSize].nb_occ)+1));
+			//dataAlphabet[row].index[dataAlphabet[row].indexSize].pos[dataAlphabet[row].index[dataAlphabet[row].indexSize].nb_occ] = pos;
+			//dataAlphabet[row].index[dataAlphabet[row].indexSize].nb_occ = (dataAlphabet[row].index[dataAlphabet[row].indexSize].nb_occ) + 1;
+			
 			return (*indexId);
 			
 		}else{
