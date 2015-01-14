@@ -20,6 +20,7 @@ int ajouterEnFin(int wordid, char letter, int pos, int * indexId)
 	if (isrowExist(letter) == 0) {
 		
 		if (rowCreate(letter) == 0) return -1;
+		row = rowId(letter);
 		
 	}else{
 		
