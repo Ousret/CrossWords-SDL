@@ -2,9 +2,13 @@
 #include <stdlib.h>
 #include <string.h>
 #include <pthread.h>
-
+#include <openssl/aes.h>
+#include <openssl/evp.h>
 #include <ESDL.h>
+
 #include "include/engine.h"
+#include "include/mliste.h"
+#include "include/save.h"
 
 #define DIR_UP 4
 #define DIR_DOWN 1
@@ -12,7 +16,7 @@
 #define DIR_RIGHT 3
 
 int EXP_J1 = 0, LVL_J1 = 1;
-FILE *debugp = NULL;
+d_save *savegame = NULL;
 
 void generateIndex() {
 	
@@ -28,19 +32,18 @@ void generateIndex() {
 	//if(DEBUG)fprintf(stderr,"\nIndex initializing");
 	
 	if (!fic) return;
-	fprintf(debugp, "generateIndex BEGIN\n");
+	
 	sprintf(msg,"Lecture du dictionnaire..");
 	SDL_modText(loading, 0, msg, colorBlack, 50, 550);
 	SDL_generate(loading);
+	
 	initialiseFrom(fic);
 	//if(DEBUG)fprintf(stderr,"\nIndex initialized\n");
-	
 	sprintf(msg, "Dictionnaire pret a l'emploi..");
 	SDL_modText(loading, 0, msg, colorBlack, 50, 550);
 	SDL_generate(loading);
 	
 	fclose(fic);
-	fprintf(debugp, "End read fic\n");
 	SDL_freeWindow(loading);
 	
 }
@@ -146,6 +149,8 @@ void ingame() {
 	
 	memset(select, 0, sizeof(select));
 	memset(XP_HUD, 0, sizeof(XP_HUD));
+	
+	
 	
 	SDL_newTexture(ingame, NULL, "APP_INGAME.png", 0, 0, 800, 600);
 	SDL_newSprite(ingame, "panda_sp.png", colorGreenLight, 145, 144, 36, 33, posX, posY, DIR_DOWN, 1, 0);
@@ -314,13 +319,11 @@ void ingame() {
 
 }
 
-int main(int argc, char * argv[]) {
+int main() {
 	
 	char pseudo[100], ratio[100], nb_mots_txt[100];
 	int choix = 0;
 	t_window *menu = NULL, *popup = NULL;
-	
-	debugp = fopen("debug.txt","w");
 	
 	memset(pseudo, 0, sizeof(pseudo));
 	strcpy(pseudo, "NoName");
@@ -331,19 +334,19 @@ int main(int argc, char * argv[]) {
 	if(DEBUG)fprintf(stderr,"\nRandom initialized\n");
 	
 	SDL_init(800, 600, 0, "CrossWords ESDL", NULL, 1, "global.ttf", 20, 1); //800x600 +tff_support +audio_support
-	fprintf(debugp, "generateIndex START\n");
+	
 	generateIndex();
-	fprintf(debugp, "Menu START\n");
+	
 	menu = SDL_newWindow("CrossWords SDL", 0, 0, 800, 600);
 	SDL_newTexture(menu, NULL, "APP_BG_SAMPLE.png", 0, 0, 800, 600);
-	fprintf(debugp, "Texture LOAD\n");
+	
 	SDL_newObj(menu, NULL, 0, "Nouvelle partie", NULL, ALL, 50, 550, 40, 230);
 	SDL_newObj(menu, NULL, 0, "Options", NULL, ALL, 280, 550, 40, 230);
 	SDL_newObj(menu, NULL, 0, "Quitter", NULL, ALL, 510, 550, 40, 230);
 	SDL_newText(menu, NULL, pseudo, colorBlack, 550, 40);
 	sprintf(ratio, "Score : %i d'XP", EXP_J1);
 	SDL_newText(menu, NULL, ratio, colorRed, 550, 60);
-	fprintf(debugp, "While ENTER\n");
+	
 	while (1) {
 		
 		sprintf(ratio, "Score : %i d'XP", EXP_J1);
@@ -388,6 +391,8 @@ int main(int argc, char * argv[]) {
 				SDL_freeWindow(popup);
 				break;
 			case 2:
+				SDL_freeWindow(menu);
+				flushIndex();
 				exit(0);
 				break;
 		}
@@ -395,6 +400,7 @@ int main(int argc, char * argv[]) {
 	}
 	
 	SDL_freeWindow(menu);
+	flushIndex();
 	
 	return 0;
 	

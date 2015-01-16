@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <time.h>
 #include <unistd.h>
+#include <pthread.h>
 
 #include "include/engine.h"
 #include "include/mliste.h"
@@ -42,7 +43,7 @@ void initialiseFrom(FILE * fic) {
 		
 		memset(allData[nb_words].word, 0, sizeof(allData[nb_words].word));
 		
-		for (i = 0; i < strlen(tmp_word); i++) {
+		for (i = 0; i <  (int) strlen(tmp_word); i++) {
 			
 			allData[nb_words].word[i] = tmp_word[i];
 			*tmp_index = ajouterEnFin(nb_words, tmp_word[i], i, tmp_index);
