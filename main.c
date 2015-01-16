@@ -22,23 +22,23 @@ void generateIndex() {
 	
 	char msg[200];
 	memset(msg, 0, sizeof(msg));
+	
+	/* Load new context */
 	t_window * loading = SDL_newWindow("CrossWords SDL", 0, 0, 800, 600);
 	SDL_newTexture(loading, NULL, "APP_BG_LOAD.png", 0, 0, 800, 600);
 	SDL_newText(loading, NULL, msg, colorBlack, 50, 550);
 	
-	//Indexation
+	/* Opening file that contain all words */
 	FILE * fic = NULL;
 	fic=fopen("fr.dic","r");
-	//if(DEBUG)fprintf(stderr,"\nIndex initializing");
 	
-	if (!fic) return;
+	if (!fic) exit(0); //If file does not exit, just quit..
 	
 	sprintf(msg,"Lecture du dictionnaire..");
 	SDL_modText(loading, 0, msg, colorBlack, 50, 550);
 	SDL_generate(loading);
 	
 	initialiseFrom(fic);
-	//if(DEBUG)fprintf(stderr,"\nIndex initialized\n");
 	sprintf(msg, "Dictionnaire pret a l'emploi..");
 	SDL_modText(loading, 0, msg, colorBlack, 50, 550);
 	SDL_generate(loading);
@@ -57,16 +57,12 @@ void generateGrille() {
 	t_window * loading = SDL_newWindow("CrossWords SDL", 0, 0, 800, 600);
 	SDL_newTexture(loading, NULL, "APP_BG_LOAD.png", 0, 0, 800, 600);
 	SDL_newText(loading, NULL, msg, colorBlack, 50, 550);
-	
-	// DEBUG BENCHMARK
-	time_t tbegin;
-	time_t tend;
-	time_t texec;
-	if(DEBUG)tbegin=time(NULL);
+	/* Init var for engine.c */
 	nb_empty_cell = M*M;
 	MAX_WORDS=0;
 	memset(words, 0, sizeof(words));
 	memset(id_matched, 0, sizeof(id_matched));
+	
 	// Matrice
 	sprintf(msg, "Preparation de la table de mot-meles..");
 	SDL_modText(loading, 0, msg, colorBlack, 50, 550);
@@ -104,14 +100,6 @@ void generateGrille() {
 	SDL_modText(loading, 0, msg, colorBlack, 50, 550);
 	SDL_generate(loading);
 	
-	// AFFICHAGE DE LA MATRICE (CONSOLE)
-	if(DEBUG)displayMatrice();
-	
-	// DEBUG BENCHMARK
-	if(DEBUG)tend = time(NULL);
-	if(DEBUG)texec = difftime(tend,tbegin);
-	if(DEBUG)fprintf(stderr,"\n\nBENCH : %li\n\n",texec);
-	
 	SDL_freeWindow(loading);
 	
 }
@@ -141,7 +129,7 @@ void ingame() {
 	
 	int nb_word_remain = MAX_WORDS;
 	
-	char select[50];
+	char select[399];
 	int select_mode = 0, id_match = 0;
 	int HUD = 0;
 	char tmp[5];
@@ -149,8 +137,7 @@ void ingame() {
 	
 	memset(select, 0, sizeof(select));
 	memset(XP_HUD, 0, sizeof(XP_HUD));
-	
-	
+	memset(id_matched, -1, sizeof(id_matched));
 	
 	SDL_newTexture(ingame, NULL, "APP_INGAME.png", 0, 0, 800, 600);
 	SDL_newSprite(ingame, "panda_sp.png", colorGreenLight, 145, 144, 36, 33, posX, posY, DIR_DOWN, 1, 0);
@@ -163,10 +150,7 @@ void ingame() {
 			tmp[0] = matrice[j][i];
 			SDL_newText(ingame, NULL, tmp, colorWhite, x_tmp, y_tmp);
 			x_tmp+=20;
-			fprintf(stdout, "%c ", matrice[i][j]);
 		}
-		
-		fprintf(stdout, "\n");
 		
 		y_tmp += 20;
 		x_tmp = 85;
@@ -214,7 +198,10 @@ void ingame() {
 				
 				id_match = isAllreadyIn(select);
 				
-				for (i = 0; i < MAX_WORDS-nb_word_remain; i++) {
+				fprintf(stdout, "id_match = %i\n", id_match);
+				
+				//-nb_word_remain
+				for (i = 0; i < MAX_WORDS; i++) {
 						if (id_matched[i] == id_match) break;
 				}
 				
@@ -332,9 +319,7 @@ int main() {
 	strcpy(pseudo, "NoName");
 	
 	// Aléatoirité
-	if(DEBUG)fprintf(stderr,"\nRandom initializing");
 	srand(time(NULL));
-	if(DEBUG)fprintf(stderr,"\nRandom initialized\n");
 	
 	SDL_init(800, 600, 0, "CrossWords ESDL", NULL, 1, "global.ttf", 20, 1); //800x600 +tff_support +audio_support
 	
