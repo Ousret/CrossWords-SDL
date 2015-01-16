@@ -160,10 +160,13 @@ void ingame() {
 	for (i = 0; i < M; i++) {
 		
 		for (j = 0; j < M; j++) {
-			tmp[0] = matrice[i][j];
+			tmp[0] = matrice[j][i];
 			SDL_newText(ingame, NULL, tmp, colorWhite, x_tmp, y_tmp);
 			x_tmp+=20;
+			fprintf(stdout, "%c ", matrice[i][j]);
 		}
+		
+		fprintf(stdout, "\n");
 		
 		y_tmp += 20;
 		x_tmp = 85;
@@ -238,7 +241,7 @@ void ingame() {
 				for (i = 0; i < M; i++) {
 		
 					for (j = 0; j < M; j++) {
-						tmp[0] = matrice[i][j];
+						tmp[0] = matrice[j][i];
 						SDL_modText(ingame, (i*20)+j ,tmp, colorWhite, -1, -1);
 					}
 	
@@ -298,7 +301,7 @@ void ingame() {
 		if (pos_relative_x < M && pos_relative_y < M && select_mode == 1) {
 			
 			id_mod = (pos_relative_y*20) + pos_relative_x;
-			tmp[0] = matrice[pos_relative_y][pos_relative_x];
+			tmp[0] = matrice[pos_relative_x][pos_relative_y];
 			if (pos_x_tmp != pos_relative_x || pos_y_tmp != pos_relative_y) strcat (select, tmp);
 			SDL_modText(ingame, id_mod, tmp, colorRed, -1 , -1);
 			
