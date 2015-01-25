@@ -24,8 +24,8 @@ void generateIndex() {
 	memset(msg, 0, sizeof(msg));
 	
 	/* Load new context */
-	t_window * loading = SDL_newWindow("CrossWords SDL", 0, 0, 800, 600);
-	SDL_newTexture(loading, NULL, "APP_BG_LOAD.png", 0, 0, 800, 600);
+	t_context * loading = SDL_newContext("CrossWords SDL", 0, 0, 800, 600);
+	SDL_newImage(loading, NULL, "APP_BG_LOAD.png", 0, 0);
 	SDL_newText(loading, NULL, msg, colorBlack, 50, 550);
 	
 	/* Opening file that contain all words */
@@ -44,7 +44,7 @@ void generateIndex() {
 	SDL_generate(loading);
 	
 	fclose(fic);
-	SDL_freeWindow(loading);
+	SDL_freeContext(loading);
 	
 }
 
@@ -54,8 +54,8 @@ void generateGrille() {
 	pthread_t thread_fillMatrice;
 	
 	memset(msg, 0, sizeof(msg));
-	t_window * loading = SDL_newWindow("CrossWords SDL", 0, 0, 800, 600);
-	SDL_newTexture(loading, NULL, "APP_BG_LOAD.png", 0, 0, 800, 600);
+	t_context * loading = SDL_newContext("CrossWords SDL", 0, 0, 800, 600);
+	SDL_newImage(loading, NULL, "APP_BG_LOAD.png", 0, 0);
 	SDL_newText(loading, NULL, msg, colorBlack, 50, 550);
 	/* Init var for engine.c */
 	nb_empty_cell = M*M;
@@ -100,29 +100,29 @@ void generateGrille() {
 	SDL_modText(loading, 0, msg, colorBlack, 50, 550);
 	SDL_generate(loading);
 	
-	SDL_freeWindow(loading);
+	SDL_freeContext(loading);
 	
 }
 
 int pause() {
 	int choix = 0;
-	t_window * popup = SDL_newWindow("Mon compte", 200, 200, 500, 250);
+	t_context * popup = SDL_newContext("Mon compte", 200, 200, 500, 250);
 			
-	SDL_newTexture(popup, NULL, "popup.png", 0, 0, 500, 250);
+	SDL_newImage(popup, NULL, "popup.png", 0, 0);
 	SDL_newText(popup, NULL, "PAUSE", colorWhite, 100, 100);
 	
-	SDL_newObj(popup, NULL, 0, "Continuer", NULL, ALL, 10, 200, 40, 230);
-	SDL_newObj(popup, NULL, 0, "Menu", NULL , ALL, 250, 200, 40, 230);
+	SDL_newObj(popup, NULL, 0, "Continuer", ALIGN_CENTER, NULL, NONE, 10, 200);
+	SDL_newObj(popup, NULL, 0, "Menu", ALIGN_CENTER, NULL , NONE, 250, 200);
 			
 	choix = SDL_generate(popup);
-	SDL_freeWindow(popup);	
+	SDL_freeContext(popup);	
 	
 	return choix;
 }
 
 void ingame() {
 	
-	t_window * ingame =  SDL_newWindow("CrossWords SDL", 0, 0, 800, 600);
+	t_context * ingame =  SDL_newContext("CrossWords SDL", 0, 0, 800, 600);
 	int posX = 40, posY = 80, i = 0, j = 0, update = 1, animate = 1, x_tmp = 85, y_tmp = 40;
 	char XP_HUD[100];
 	int pos_relative_x = 0, pos_x_tmp = 0, pos_y_tmp = 0, pos_relative_y = 0, id_mod = 0;
@@ -139,8 +139,8 @@ void ingame() {
 	memset(XP_HUD, 0, sizeof(XP_HUD));
 	memset(id_matched, -1, sizeof(id_matched));
 	
-	SDL_newTexture(ingame, NULL, "APP_INGAME.png", 0, 0, 800, 600);
-	SDL_newSprite(ingame, "panda_sp.png", colorGreenLight, 145, 144, 36, 33, posX, posY, DIR_DOWN, 1, 0);
+	SDL_newImage(ingame, NULL, "APP_INGAME.png", 0, 0);
+	SDL_newSprite(ingame, "panda_sp.png", colorGreenLight, 36, 33, posX, posY, DIR_DOWN, 1, 0);
 	SDL_loadSound("xpup.wav");
 	
 	//510x 40y
@@ -176,7 +176,7 @@ void ingame() {
 		
 		if (SDL_isKeyPressed(SDLK_ESCAPE)) {
 			if (pause() == 1) {
-				SDL_freeWindow(ingame);
+				SDL_freeContext(ingame);
 				return;
 			}else{
 				update = 1;
@@ -198,8 +198,6 @@ void ingame() {
 				
 				id_match = isAllreadyIn(select);
 				
-				fprintf(stdout, "id_match = %i\n", id_match);
-				
 				//-nb_word_remain
 				for (i = 0; i < MAX_WORDS; i++) {
 						if (id_matched[i] == id_match) break;
@@ -208,7 +206,7 @@ void ingame() {
 				if ((id_match >= 0) && (id_match != id_matched[i])) {
 					
 					SDL_modText(ingame, 400+id_match, words[id_match], colorRed, -1, -1);
-					SDL_playSound("xpup.wav", 0);
+					SDL_playSound("xpup.wav");
 					id_matched[MAX_WORDS-nb_word_remain] = id_match;
 					
 					nb_word_remain--;
@@ -216,7 +214,7 @@ void ingame() {
 					sprintf(XP_HUD, "%i d'XP", EXP_J1);
 					SDL_modText(ingame, HUD+1, XP_HUD, colorWhite, -1, -1);
 					if (nb_word_remain <= 0) {
-						SDL_freeWindow(ingame);
+						SDL_freeContext(ingame);
 						return;	
 					}else{
 						update = 1;
@@ -301,8 +299,6 @@ void ingame() {
 			update = 0;
 		}
 		
-		SDL_Delay(50);
-		
 		if (animate >= 4) animate = 1;
 		
 	}
@@ -313,7 +309,7 @@ int main() {
 	
 	char pseudo[100], ratio[100], nb_mots_txt[100];
 	int choix = 0;
-	t_window *menu = NULL, *popup = NULL;
+	t_context *menu = NULL, *popup = NULL;
 	
 	memset(pseudo, 0, sizeof(pseudo));
 	strcpy(pseudo, "NoName");
@@ -321,16 +317,16 @@ int main() {
 	// Aléatoirité
 	srand(time(NULL));
 	
-	SDL_init(800, 600, 0, "CrossWords ESDL", NULL, 1, "global.ttf", 20, 1); //800x600 +tff_support +audio_support
+	SDL_initWindow(800, 600, 0, "CrossWords ESDL", NULL, 1, "global.ttf", 20, 1); //800x600 +tff_support +audio_support
 	
 	generateIndex();
 	
-	menu = SDL_newWindow("CrossWords SDL", 0, 0, 800, 600);
-	SDL_newTexture(menu, NULL, "APP_BG_SAMPLE.png", 0, 0, 800, 600);
+	menu = SDL_newContext("CrossWords SDL", 0, 0, 800, 600);
+	SDL_newImage(menu, NULL, "APP_BG_SAMPLE.png", 0, 0);
 	
-	SDL_newObj(menu, NULL, 0, "Nouvelle partie", NULL, ALL, 50, 550, 40, 230);
-	SDL_newObj(menu, NULL, 0, "Options", NULL, ALL, 280, 550, 40, 230);
-	SDL_newObj(menu, NULL, 0, "Quitter", NULL, ALL, 510, 550, 40, 230);
+	SDL_newObj(menu, NULL, 0, "Nouvelle partie", ALIGN_CENTER, NULL, NONE, 50, 550);
+	SDL_newObj(menu, NULL, 0, "Options", ALIGN_CENTER, NULL, NONE, 280, 550);
+	SDL_newObj(menu, NULL, 0, "Quitter", ALIGN_CENTER, NULL, NONE, 510, 550);
 	SDL_newText(menu, NULL, pseudo, colorBlack, 550, 40);
 	sprintf(ratio, "Score : %i d'XP", EXP_J1);
 	SDL_newText(menu, NULL, ratio, colorRed, 550, 60);
@@ -346,16 +342,16 @@ int main() {
 		switch (choix) {
 			case 0:
 				
-				popup = SDL_newWindow("Mon compte", 200, 200, 500, 250);
+				popup = SDL_newContext("Mon compte", 200, 200, 500, 250);
 				memset(nb_mots_txt,0,sizeof(nb_mots_txt));
-				SDL_newTexture(popup, NULL, "popup.png", 0, 0, 500, 250);
+				SDL_newImage(popup, NULL, "popup.png", 0, 0);
 				SDL_newText(popup, NULL, "Preciser le nombre de mots (de 10 a 40)", colorWhite, 10, 40);
-				SDL_newObj(popup, NULL, 1, "Mots", nb_mots_txt, NUMERIC, 70, 70, 40, 400);
+				SDL_newObj(popup, NULL, 1, "Mots", ALIGN_LEFT, nb_mots_txt, NUMERIC, 70, 70);
 				
-				SDL_newObj(popup, NULL, 0, "Generer", NULL , ALL, 150, 200, 40, 230);
+				SDL_newObj(popup, NULL, 0, "Generer", ALIGN_CENTER, NULL , NONE, 150, 200);
 				
 				SDL_generate(popup);
-				SDL_freeWindow(popup);
+				SDL_freeContext(popup);
 				
 				if (atoi(nb_mots_txt) >= 10 && atoi(nb_mots_txt) <= 40) {
 					limite_mots = atoi(nb_mots_txt);
@@ -366,20 +362,20 @@ int main() {
 				break;
 			case 1:
 				//Options
-				popup = SDL_newWindow("Mon compte", 200, 200, 500, 250);
+				popup = SDL_newContext("Mon compte", 200, 200, 500, 250);
 				
-				SDL_newTexture(popup, NULL, "popup.png", 0, 0, 500, 250);
+				SDL_newImage(popup, NULL, "popup.png", 0, 0);
 				SDL_newText(popup, NULL, "Voici le recapitulatif de votre session", colorWhite, 10, 40);
-				SDL_newObj(popup, NULL, 1, "Pseudo", pseudo, ALL, 70, 70, 40, 400);
+				SDL_newObj(popup, NULL, 1, "Pseudo", ALIGN_LEFT, pseudo, NONE, 70, 70);
 				
 				SDL_newText(popup, NULL, ratio, colorWhite, 80, 110);
-				SDL_newObj(popup, NULL, 0, "Fermer", NULL , ALL, 150, 200, 40, 230);
+				SDL_newObj(popup, NULL, 0, "Fermer", ALIGN_CENTER, NULL , NONE, 150, 200);
 				
 				SDL_generate(popup);
-				SDL_freeWindow(popup);
+				SDL_freeContext(popup);
 				break;
 			case 2:
-				SDL_freeWindow(menu);
+				SDL_freeContext(menu);
 				flushIndex();
 				exit(0);
 				break;
@@ -387,7 +383,7 @@ int main() {
 		
 	}
 	
-	SDL_freeWindow(menu);
+	SDL_freeContext(menu);
 	flushIndex();
 	
 	return 0;

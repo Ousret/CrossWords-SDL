@@ -8,7 +8,7 @@
  * Génération de la grille; Indexation des mots
  *
  */
-#define DEBUG 1
+#define DEBUG 0
 #define M 20
 #define MAX_LEN 128
 #define NB_EMPTY_CELL_MIN 50
