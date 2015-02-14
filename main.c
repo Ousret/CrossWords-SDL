@@ -1,14 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <pthread.h>
-#include <openssl/aes.h>
-#include <openssl/evp.h>
 #include <ESDL.h>
 
 #include "include/engine.h"
 #include "include/mliste.h"
-#include "include/save.h"
 
 #define DIR_UP 4
 #define DIR_DOWN 1
@@ -35,12 +31,12 @@ void generateIndex() {
 	if (!fic) exit(0); //If file does not exit, just quit..
 	
 	sprintf(msg,"Lecture du dictionnaire..");
-	SDL_modText(loading, 0, msg, colorBlack, 50, 550);
+	SDL_editText(loading, 0, msg, colorBlack, 50, 550);
 	SDL_generate(loading);
 	
 	initialiseFrom(fic);
 	sprintf(msg, "Dictionnaire pret a l'emploi..");
-	SDL_modText(loading, 0, msg, colorBlack, 50, 550);
+	SDL_editText(loading, 0, msg, colorBlack, 50, 550);
 	SDL_generate(loading);
 	
 	fclose(fic);
@@ -65,18 +61,18 @@ void generateGrille() {
 	
 	// Matrice
 	sprintf(msg, "Preparation de la table de mot-meles..");
-	SDL_modText(loading, 0, msg, colorBlack, 50, 550);
+	SDL_editText(loading, 0, msg, colorBlack, 50, 550);
 	SDL_generate(loading);
 	
 	initMatrice();
 	
 	sprintf(msg, "Table preparee !");
-	SDL_modText(loading, 0, msg, colorBlack, 50, 550);
+	SDL_editText(loading, 0, msg, colorBlack, 50, 550);
 	SDL_generate(loading);
 	
 	// Moteur
 	sprintf(msg, "Generation d'une nouvelle grille, %i mot(s) sur %i places..", MAX_WORDS, limite_mots);
-	SDL_modText(loading, 0, msg, colorBlack, 50, 550);
+	SDL_editText(loading, 0, msg, colorBlack, 50, 550);
 	SDL_generate(loading);
 	
 	if (pthread_create(&thread_fillMatrice, NULL, fillMatrice, NULL)) {
@@ -87,7 +83,7 @@ void generateGrille() {
 	while (MAX_WORDS < limite_mots) {
 		
 		sprintf(msg, "Generation d'une nouvelle grille, %i mot(s) sur %i places..", MAX_WORDS, limite_mots);
-		SDL_modText(loading, 0, msg, colorBlack, 50, 550);
+		SDL_editText(loading, 0, msg, colorBlack, 50, 550);
 		SDL_generate(loading);
 		
 		SDL_Delay(100);
@@ -97,7 +93,7 @@ void generateGrille() {
 	randomFilling();
 	
 	sprintf(msg, "Chargement..");
-	SDL_modText(loading, 0, msg, colorBlack, 50, 550);
+	SDL_editText(loading, 0, msg, colorBlack, 50, 550);
 	SDL_generate(loading);
 	
 	SDL_freeContext(loading);
@@ -186,14 +182,14 @@ void ingame() {
 		if (SDL_isKeyPressed(SDLK_SPACE)) {
 			
 			select_mode = 1;
-			SDL_modText(ingame, HUD, "SPACE PRESSED !", colorRed, -1, -1);
+			SDL_editText(ingame, HUD, "SPACE PRESSED !", colorRed, -1, -1);
 			update = 1;
 			
 		}else{
 			
 			if (select_mode == 1) {
 			
-				SDL_modText(ingame, HUD, "SPACE RELEASED !", colorWhite, -1, -1);
+				SDL_editText(ingame, HUD, "SPACE RELEASED !", colorWhite, -1, -1);
 				select_mode = 0;
 				
 				id_match = isAllreadyIn(select);
@@ -205,14 +201,14 @@ void ingame() {
 				
 				if ((id_match >= 0) && (id_match != id_matched[i])) {
 					
-					SDL_modText(ingame, 400+id_match, words[id_match], colorRed, -1, -1);
+					SDL_editText(ingame, 400+id_match, words[id_match], colorRed, -1, -1);
 					SDL_playSound("xpup.wav");
 					id_matched[MAX_WORDS-nb_word_remain] = id_match;
 					
 					nb_word_remain--;
 					EXP_J1+=3;
 					sprintf(XP_HUD, "%i d'XP", EXP_J1);
-					SDL_modText(ingame, HUD+1, XP_HUD, colorWhite, -1, -1);
+					SDL_editText(ingame, HUD+1, XP_HUD, colorWhite, -1, -1);
 					if (nb_word_remain <= 0) {
 						SDL_freeContext(ingame);
 						return;	
@@ -227,7 +223,7 @@ void ingame() {
 		
 					for (j = 0; j < M; j++) {
 						tmp[0] = matrice[j][i];
-						SDL_modText(ingame, (i*20)+j ,tmp, colorWhite, -1, -1);
+						SDL_editText(ingame, (i*20)+j ,tmp, colorWhite, -1, -1);
 					}
 	
 				}
@@ -242,7 +238,7 @@ void ingame() {
 				posY-=5;
 				update = 1;
 			}
-			SDL_modSprite(ingame, 0, posX, posY, DIR_UP, animate, 0);
+			SDL_editSprite(ingame, 0, posX, posY, DIR_UP, animate, 0);
 			animate++;
 		}
 		
@@ -251,7 +247,7 @@ void ingame() {
 				posY+=5;
 				update = 1;
 			}
-			SDL_modSprite(ingame, 0, posX, posY, DIR_DOWN, animate, 0);
+			SDL_editSprite(ingame, 0, posX, posY, DIR_DOWN, animate, 0);
 			animate++;
 		}
 		
@@ -260,7 +256,7 @@ void ingame() {
 				posX-=5;
 				update = 1;
 			}
-			SDL_modSprite(ingame, 0, posX, posY, DIR_LEFT, animate, 0);
+			SDL_editSprite(ingame, 0, posX, posY, DIR_LEFT, animate, 0);
 			animate++;
 		}
 		
@@ -269,7 +265,7 @@ void ingame() {
 				posX+=5;
 				update = 1;
 			}
-			SDL_modSprite(ingame, 0, posX, posY, DIR_RIGHT, animate, 0);
+			SDL_editSprite(ingame, 0, posX, posY, DIR_RIGHT, animate, 0);
 			animate++;
 		}
 		
@@ -288,7 +284,7 @@ void ingame() {
 			id_mod = (pos_relative_y*20) + pos_relative_x;
 			tmp[0] = matrice[pos_relative_x][pos_relative_y];
 			if (pos_x_tmp != pos_relative_x || pos_y_tmp != pos_relative_y) strcat (select, tmp);
-			SDL_modText(ingame, id_mod, tmp, colorRed, -1 , -1);
+			SDL_editText(ingame, id_mod, tmp, colorRed, -1 , -1);
 			
 		}
 		
@@ -308,16 +304,26 @@ void ingame() {
 int main() {
 	
 	char pseudo[100], ratio[100], nb_mots_txt[100];
+	char *readSav = NULL;
 	int choix = 0;
 	t_context *menu = NULL, *popup = NULL;
 	
 	memset(pseudo, 0, sizeof(pseudo));
-	strcpy(pseudo, "NoName");
+	//strcpy(pseudo, "NoName");
+	savegame = SDL_initProfil("crossword.sav");
+	
+	readSav = SDL_readParam(savegame, "username");
+	if (!readSav) {
+		strcpy(pseudo, "NoName");
+	}else{
+		strcpy(pseudo, readSav);
+	}
 	
 	// Aléatoirité
 	srand(time(NULL));
 	
 	SDL_initWindow(800, 600, 0, "CrossWords ESDL", NULL, 1, "global.ttf", 20, 1); //800x600 +tff_support +audio_support
+	
 	
 	generateIndex();
 	
@@ -334,8 +340,8 @@ int main() {
 	while (1) {
 		
 		sprintf(ratio, "Score : %i d'XP", EXP_J1);
-		SDL_modText(menu, 0, pseudo, colorBlack, 550, 40);
-		SDL_modText(menu, 1, ratio, colorRed, 550, 60);
+		SDL_editText(menu, 0, pseudo, colorBlack, 550, 40);
+		SDL_editText(menu, 1, ratio, colorRed, 550, 60);
 		
 		choix = SDL_generate(menu);
 		
@@ -373,16 +379,22 @@ int main() {
 				
 				SDL_generate(popup);
 				SDL_freeContext(popup);
+				
+				SDL_writeParam(savegame, "username", pseudo);
 				break;
 			case 2:
 				SDL_freeContext(menu);
 				flushIndex();
+				SDL_saveProfil(savegame);
+				SDL_freeProfil(savegame);
 				exit(0);
 				break;
 		}
 		
 	}
 	
+	SDL_saveProfil(savegame);
+	SDL_freeProfil(savegame);
 	SDL_freeContext(menu);
 	flushIndex();
 	
